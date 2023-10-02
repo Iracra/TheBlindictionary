@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const details = document.getElementById("details");
   const input = document.getElementById("wordInput");
   const clearButton = document.getElementById("clearbutton");
+  var globalwordDet;
 
   searchButton.addEventListener("click", async function (event) {
     event.preventDefault();
@@ -46,10 +47,11 @@ document.addEventListener("DOMContentLoaded", function () {
         const response = await fetch(urldD, { mode: "cors" });
         const words = await response.json();
         if (words && words.length > 0) {
-          const h2 = document.createElement("h2");
-          results.appendChild(h2);
-          h2.textContent = "Terms Found:";
-          h2.id = "res1";
+          const h1 = document.createElement("h1");
+          results.appendChild(h1);
+          h1.textContent = "Terms Found:";
+          h1.id = "res1";
+          h1.classList.add("larger-text"); 
           const linkContainer = document.createElement("div");
           linkContainer.setAttribute("aria-label", "Terms Result List");
           for (let a = 0; a < words.length; a++) {
@@ -77,11 +79,12 @@ document.addEventListener("DOMContentLoaded", function () {
             }
           }
 
-          h2.appendChild(linkContainer);
+          h1.appendChild(linkContainer);
         }
       } catch (error) {
         console.error(error);
-        document.getElementById("resultsDiv").innerHTML = "Error in the API call.";
+        document.getElementById("resultsDiv").innerHTML =
+          "Error in the API call.";
       }
     }
   }
@@ -91,13 +94,12 @@ document.addEventListener("DOMContentLoaded", function () {
       method: "GET",
       headers: {
         "X-RapidAPI-Key": "07e0782a67mshe6931296b9986dap118445jsn9b7a1fbadec6",
-        "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com",
-      },
+        "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com"
+      }
     };
     const url = `https://wordsapiv1.p.rapidapi.com/words/${singleWord}`;
     const response = await fetch(url, options);
     const wordDetails = await response.json();
-
     if (!wordDetails || wordDetails.results.length === 0) {
       details.hidden = true;
       const errorDiv = document.createElement("div");
@@ -105,6 +107,7 @@ document.addEventListener("DOMContentLoaded", function () {
       document.body.appendChild(errorDiv);
       return;
     }
+    globalwordDet = wordDetails;
     details.hidden = false;
     const results = wordDetails.results;
     await clearResults(detailDiv);
@@ -122,19 +125,26 @@ document.addEventListener("DOMContentLoaded", function () {
   async function templatePage(word, results) {
     const detailDiv = document.getElementById("datailCont");
     const detailsHdr = document.getElementById("detailsHdr");
+    const pronouce = globalwordDet.pronunciation.all;
     detailsHdr.hidden = false;
     const h2Word = document.createElement("h2");
-    h2Word.textContent = word;
+    const  h2pronounce = document.createElement("h2");
+    h2Word.id = "wrd";
+    h2Word.textContent = "Word: " + word;
+    h2Word.classList.add("larger-text");
     detailDiv.style.lineHeight = "0.001";
     detailDiv.appendChild(document.createElement("br"));
     detailDiv.appendChild(h2Word);
+    h2pronounce.id="prn";
+    h2pronounce.textContent = "Pronunciation: " + pronouce;
+    detailDiv.appendChild(h2pronounce);
     detailDiv.style.lineHeight = "0.001";
     detailDiv.appendChild(document.createElement("br"));
+
     const flagNoun = await checkPartOfSpeech("noun", results);
     if (flagNoun) {
       createSection("Noun", "noun");
-      generateDetails(results, "noun")
-
+      generateDetails(results, "noun");
     }
 
     const flagVerb = await checkPartOfSpeech("verb", results);
@@ -162,11 +172,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
     var otherPartOfSpeech = await getOtherPartofSpeech(results);
     if (otherPartOfSpeech) {
-      var otherPartOfSpeech = otherPartOfSpeech.charAt(0).toUpperCase() + otherPartOfSpeech.slice(1);
+      var otherPartOfSpeech =
+        otherPartOfSpeech.charAt(0).toUpperCase() + otherPartOfSpeech.slice(1);
       createSection(otherPartOfSpeech, "other");
       generateDetails(results, "other");
     }
 
+    const backButton = document.createElement("button");
+    backButton.textContent = "New Search";
+    backButton.addEventListener("click", async function (event) {
+      event.preventDefault();
+      await clearResults(results);
+      await refreshDetails();
+      input.value = "";
+      input.focus();
+    });
+    detailDiv.style.lineHeight = "0.001";
+    detailDiv.appendChild(document.createElement("br"));
+    detailDiv.appendChild(backButton);
+    h2Word.focus();
   }
 
   function checkPartOfSpeech(PartOfSpeech, results) {
@@ -209,7 +233,13 @@ document.addEventListener("DOMContentLoaded", function () {
   function getOtherPartofSpeech(results) {
     for (const result of results) {
       var partOfSpeech = result.partOfSpeech;
-      if (partOfSpeech !== 'noun' && partOfSpeech !== 'verb' && partOfSpeech !== 'adverb' && partOfSpeech !== 'adjective' && partOfSpeech !== 'pronoun') {
+      if (
+        partOfSpeech !== "noun" &&
+        partOfSpeech !== "verb" &&
+        partOfSpeech !== "adverb" &&
+        partOfSpeech !== "adjective" &&
+        partOfSpeech !== "pronoun"
+      ) {
         return partOfSpeech;
       }
     }
@@ -221,73 +251,150 @@ document.addEventListener("DOMContentLoaded", function () {
     const childId = createSection("Definitions:", id);
     const defDiv = document.getElementById(id);
     var i = 0;
-
+    const defContainer = document.createElement("div");
+    defContainer.setAttribute("aria-label", "Definitions Result List");
     for (const resultn of results) {
-        const partOfSpeech = resultn.partOfSpeech;
-        if (partOfSpeech == partOfSpe && i < 3) {
-            const definition = resultn.definition;
-            const definitionParagraph = document.createElement("p");
-            definitionParagraph.textContent = capitalizeFirstLetter(definition);
+      const partOfSpeech = resultn.partOfSpeech;
+      if (partOfSpeech == partOfSpe && i < 3) {
+        const definition = resultn.definition;
+        const definitionLink = document.createElement("a");
+        definitionLink.href = "javascript:void(0)"; // Add a link with no action
+        definitionLink.textContent = capitalizeFirstLetter(definition);
+  
+        // Add CSS to control line spacing for definitions
+        definitionLink.style.margin = "0"; // Remove margin
+        definitionLink.style.padding = "0"; // Remove padding
+        definitionLink.style.lineHeight = "1.2"; // Adjust line height as needed
 
-            // Add CSS to control line spacing for definitions
-            definitionParagraph.style.margin = "0"; // Remove margin
-            definitionParagraph.style.padding = "0"; // Remove padding
-            definitionParagraph.style.lineHeight = "1.2"; // Adjust line height as needed
-
-            defDiv.appendChild(definitionParagraph);
-            defDiv.appendChild(document.createElement("br"));
-            i++;
-        }
+        definitionLink.style.textDecoration = "none"; // Remove underline
+        definitionLink.style.color = "inherit"; // Use the default text color
+        definitionLink.style.cursor = "default"; // Change cursor to default
+        // Prevent the link from navigating when clicked
+        definitionLink.onclick = function () {
+          return false;
+        };
+        
+        defContainer.appendChild(definitionLink);
+        defContainer.appendChild(document.createElement("br"));
+        
+/*         defDiv.appendChild(definitionLink);
+        defDiv.appendChild(document.createElement("br")); */
+        i++;
+      }
     }
-
+    if(defContainer.hasChildNodes()){
+    defDiv.appendChild(defContainer);
+    }
+    const exContainer = document.createElement("div");
+    exContainer.setAttribute("aria-label", "Examples Result List");
     var id2 = "ex" + partOfSpe;
     createSection("Examples:", id2); // Create the Examples section
-    const exDiv =  document.getElementById(id2);
+    const exDiv = document.getElementById(id2);
     var j = 0;
     let foundExample = false; // Flag to track if any examples are found
-
+  
     for (const resultn of results) {
-        const partOfSpeech = resultn.partOfSpeech;
-        if (partOfSpeech == partOfSpe && j < 1) {
-            const examples = resultn.examples;
-            if (examples && examples.length > 0) {
-                for (const example of examples) {
-                    const exampleParagraph = document.createElement("p");
-                    exampleParagraph.textContent = capitalizeFirstLetter(example);
+      const partOfSpeech = resultn.partOfSpeech;
+      if (partOfSpeech == partOfSpe && j < 1) {
+        const examples = resultn.examples;
+        if (examples && examples.length > 0) {
+          for (const example of examples) {
+            const exampleLink = document.createElement("a");
+            exampleLink.href = "javascript:void(0)"; // Add a link with no action
+            exampleLink.textContent = capitalizeFirstLetter(example);
+  
+            // Add CSS to control line spacing for examples
+            exampleLink.style.margin = "0"; // Remove margin
+            exampleLink.style.padding = "0"; // Remove padding
+            exampleLink.style.lineHeight = "1.2"; // Adjust line height as needed
+            exampleLink.style.textDecoration = "none"; // Remove underline
+            exampleLink.style.color = "inherit"; // Use the default text color
+            exampleLink.style.cursor = "default"; // Change cursor to default
+            // Prevent the link from navigating when clicked
+            exampleLink.onclick = function () {
+              return false;
+            };
 
-                    // Add CSS to control line spacing for examples
-                    exampleParagraph.style.margin = "0"; // Remove margin
-                    exampleParagraph.style.padding = "0"; // Remove padding
-                    exampleParagraph.style.lineHeight = "1.2"; // Adjust line height as needed
-
-                    exDiv.appendChild(exampleParagraph);
-                    exDiv.appendChild(document.createElement("br"));
-                }
-                foundExample = true; // Set the flag to true if examples are found
-                j++;
-            }
-      
+            exContainer.appendChild(exampleLink);
+            exContainer.appendChild(document.createElement("br"));
+            
+/*             exDiv.appendChild(exampleLink);
+            exDiv.appendChild(document.createElement("br")); */
+          }
+          foundExample = true; // Set the flag to true if examples are found
+          j++;
         }
+      }
     }
-    
-    // Hide the Examples section if no examples are found
-    if (foundExample == false) {
-        exDiv.hidden = true;
+    if(exContainer.hasChildNodes()){
+      exDiv.appendChild(exContainer);
     }
-}
 
 
-
+    var id3 = "syn" + partOfSpe;
+    createSection("Synonyms:", id3);
+    const synDiv = document.getElementById(id3);
+    var k = 0;
+    let foundSynonym = false; // Flag to track if any synonyms are found
+    const synonymsArray = []; // Array to store synonyms
+    const synonymsContainer = document.createElement("div");
+    synonymsContainer.setAttribute("aria-label", "Synonyms Result List");
+    for (const resultn of results) {
+      const partOfSpeech = resultn.partOfSpeech;
+      if (partOfSpeech == partOfSpe && k < 4) {
+        const synonyms = resultn.synonyms;
+        if (synonyms && synonyms.length > 0) {
+          synonymsArray.push(...synonyms.slice(0, 4)); // Add up to 4 synonyms to the array
+          foundSynonym = true; // Set the flag to true if synonyms are found
+          k++;
+        }
+      }
+    }
+  
+    if (synonymsArray.length > 0) {
+      const synonymsText = synonymsArray.slice(0, 5).map(capitalizeFirstLetter).join(", ");
+      const synonymLink = document.createElement("a");
+      synonymLink.href = "javascript:void(0)"; // Add a link with no action
+      synonymLink.textContent = synonymsText;
+  
+      synonymLink.style.margin = "0"; 
+      synonymLink.style.padding = "0"; 
+      synonymLink.style.lineHeight = "1.2"; 
+      synonymLink.style.textDecoration = "none"; // Remove underline
+      synonymLink.style.color = "inherit"; // Use the default text color
+      synonymLink.style.cursor = "default"; // Change cursor to default
+      // Prevent the link from navigating when clicked
+      synonymLink.onclick = function () {
+        return false;
+      };
+      synonymsContainer.appendChild(synonymLink);
+      synonymsContainer.appendChild(document.createElement("br"));
+      
+/*       synDiv.appendChild(synonymLink);
+      synDiv.appendChild(document.createElement("br")); */
+    }
+    synonymsContainer.appendChild(document.createElement("br"));
+    if(synonymsContainer.hasChildNodes()){
+      synDiv.appendChild(synonymsContainer);
+      }
+      
+    if (foundExample === false) {
+      exDiv.hidden = true;
+    }
+  }
+  
+  
+  
 
   async function refreshDetails() {
     await clearResults(details);
-    const h2 = document.createElement("h2");
-    h2.id = "detailsHdr";
-    h2.textContent = "Terms Details:";
-    h2.hidden = true;
+    const h1 = document.createElement("h1");
+    h1.id = "detailsHdr";
+    h1.textContent = "Terms Details:";
+    h1.hidden = true;
     const div = document.createElement("div");
     div.id = "datailCont";
-    div.appendChild(h2);
+    div.appendChild(h1);
     details.appendChild(document.createElement("br"));
     details.appendChild(div);
     details.appendChild(document.createElement("br"));

@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const port = 3000; // You can choose any port you like
 const path = require("path");
-const axios = require("axios");
+
 
 app.set("view engine", "ejs");
 
