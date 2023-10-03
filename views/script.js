@@ -141,6 +141,38 @@ document.addEventListener("DOMContentLoaded", function () {
     detailDiv.style.lineHeight = "0.001";
     detailDiv.appendChild(document.createElement("br"));
 
+
+    const playPronounceButton = document.createElement("button");
+    playPronounceButton.innerHTML = '<span>&#x1F50A;</span> Play Pronounce'; // Unicode for the speaker icon
+    playPronounceButton.id = "playPronounceButton";
+    playPronounceButton.style.fontSize = "16px";
+    playPronounceButton.style.padding = "10px 20px";
+    playPronounceButton.style.backgroundColor = "#28a745"; // Green color (you can change it)
+    playPronounceButton.style.color = "#fff";
+    playPronounceButton.style.border = "none";
+    playPronounceButton.style.borderRadius = "5px";
+    playPronounceButton.style.cursor = "pointer";
+    playPronounceButton.style.marginTop = "10px"; // Add some space on top
+    
+    // Add hover effect
+    playPronounceButton.addEventListener("mouseenter", function () {
+      playPronounceButton.style.backgroundColor = "#218838"; // Darker green color on hover
+    });
+    
+    playPronounceButton.addEventListener("mouseleave", function () {
+      playPronounceButton.style.backgroundColor = "#28a745"; // Restore original color on mouse leave
+    });
+    playPronounceButton.style.marginTop = "10px"; // Add some space on top
+    
+    playPronounceButton.addEventListener("click", async function () {
+    responsiveVoice.speak(word);
+
+    });
+/*   } */
+  
+    // Add the "Play Pronounce" button to the detailDiv
+    detailDiv.appendChild(playPronounceButton);
+
     const flagNoun = await checkPartOfSpeech("noun", results);
     if (flagNoun) {
       createSection("Noun", "noun");
@@ -419,4 +451,21 @@ document.addEventListener("DOMContentLoaded", function () {
   function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
+ /*  async function fetchPronunciationAudio(word) {
+    try {
+      const response = await fetch(`https://code.responsivevoice.org/getvoice.php?t=${encodeURIComponent(word)}&tl=en-GB`);
+    
+      if (response.ok) {
+        // Read the response as an ArrayBuffer
+        const audioData = await response.arrayBuffer();
+        return audioData;
+      } else {
+        console.error('No pronunciation found for the word.');
+        return null;
+      }
+    } catch (error) {
+      console.error('Error fetching pronunciation:', error);
+      return null;
+    }
+  } */
 });
