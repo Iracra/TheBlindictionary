@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  
   clearButton.addEventListener("click", async function (event) {
     event.preventDefault();
     await clearResults(results);
