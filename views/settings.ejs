@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link id="styleLink" rel="stylesheet" type="text/css" href="/views/style.css">
+    <title>Website Settings</title>
+</head>
+
+<body id="body">
+    <script type="text/javascript" src="/views/script.js"></script>
+    <h1>Website Settings</h1>
+
+    <form id="settings-form">
+        <!-- Background color settings -->
+        <label for="bg-color">Background Color:</label>
+        <select id="bg-color">
+            <option value="black" selected>Black</option>
+            <option value="green">Green</option>
+            <option value="yellow">Yellow</option> <!-- Default value -->
+            <option value="grey">Grey</option>
+            <option value="white">White</option>
+        </select>
+
+        <!-- Text color settings -->
+        <label for="text-color">Text Color:</label>
+        <select id="text-color">
+            <option value="black">Black</option>
+            <option value="green">Green</option>
+            <option value="yellow">Yellow</option> <!-- Default value -->
+            <option value="grey">Grey</option>
+            <option value="white" selected>White</option>
+        </select>
+
+        <!-- Text font settings -->
+        <label for="text-font">Text Font:</label>
+        <select id="text-font">
+            <option value="Arial" selected>Arial</option> <!-- Default value -->
+            <option value="Times New Roman">Times New Roman</option>
+            <option value="Century Gothic">Century Gothic</option>
+        </select>
+
+        <!-- Text size settings -->
+        <label for="text-size">Text Size:</label>
+        <select id="text-size">
+            <option value="100%" selected>100%</option> <!-- Default value -->
+            <option value="150%">150%</option>
+            <option value="200%">200%</option>
+        </select>
+        <br />
+        <button type="button" id="apply">Apply Settings</button>
+        <button type="button" id="reset">Reset to Default</button> <!-- Added Reset button -->
+        <button type="button" id="toHomepage">To Homepage</button>
+
+    </form>
+    <form id="form">
+        <div id="example-text" aria-label="example text">The mind is its own place, and in itself can make a heaven of
+            hell, a hell of heaven - Paradise Lost</div>
+    </form>
+    <!-- Example text element -->
+
+
+    <script>
+        // Default values
+        const defaultStyles = {
+            bgColor: '#f0f0f0',
+            textColor: '#000000',
+            textFont: 'Arial',
+            textSize: '100%',
+        };
+        // Apply settings when the "Apply Settings" button is clicked
+        document.getElementById('apply').addEventListener('click', function () {
+            // Get selected options
+            const bgColor = document.getElementById('bg-color').value;
+            const textColor = document.getElementById('text-color').value;
+            const textFont = document.getElementById('text-font').value;
+            const textSize = document.getElementById('text-size').value;
+            const body = document.getElementById('body');
+            const form = document.getElementById('settings-form');
+            const apply = document.getElementById('apply');
+            const reset = document.getElementById('reset');
+            const toHomepage = document.getElementById('toHomepage');
+            const form2 = document.getElementById('form');
+            const optionElements = document.querySelectorAll('option');
+            // Apply selected styles to the example text
+            /*          const exampleText = document.getElementById('example-text'); */
+
+            const allElements = document.querySelectorAll('*');
+
+            // Loop through all elements and apply the styles
+            allElements.forEach((element) => {
+                element.style.backgroundColor = bgColor;
+                element.style.color = textColor;
+                element.style.fontFamily = textFont;
+                element.style.fontSize = textSize;
+            });
+          
+
+            // Update the CSS link to apply global styles (optional)
+            const styleLink = document.getElementById('styleLink');
+            styleLink.href = `/views/style.css?bgColor=${bgColor}&textColor=${textColor}&textFont=${textFont}&textSize=${textSize}`;
+        });
+
+        // Reset to default values when the "Reset to Default" button is clicked
+        document.getElementById('reset').addEventListener('click', function () {
+            // Set selected options to default values
+            document.getElementById('bg-color').value = defaultStyles.bgColor;
+            document.getElementById('text-color').value = defaultStyles.textColor;
+            document.getElementById('text-font').value = defaultStyles.textFont;
+            document.getElementById('text-size').value = defaultStyles.textSize;
+
+            // Apply default styles to the example text
+            const exampleText = document.getElementById('example-text');
+            exampleText.style.backgroundColor = `#${defaultStyles.bgColor}`;
+            exampleText.style.color = `#${defaultStyles.textColor}`;
+            exampleText.style.fontFamily = defaultStyles.textFont;
+            exampleText.style.fontSize = defaultStyles.textSize;
+
+            window.location.replace = '/settings';
+
+            document.getElementById('apply').click();
+
+     
+            
+        });
+
+        // Navigate to index.ejs with the parameters when "To Homepage" button is clicked
+        document.getElementById('toHomepage').addEventListener('click', function () {
+            // Get the selected options
+            const bgColor = document.getElementById('bg-color').value;
+            const textColor = document.getElementById('text-color').value;
+            const textFont = document.getElementById('text-font').value;
+            const textSize = document.getElementById('text-size').value;
+
+            const url = `/?bgColor=${bgColor}&textColor=${textColor}&textFont=${textFont}&textSize=${textSize}`;
+            // Redirect to the homepage with parameters
+            window.location.href = url;
+        });
+
+        
+    </script>
+
+</body>
+
+</html>

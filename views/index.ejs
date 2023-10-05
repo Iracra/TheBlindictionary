@@ -1,100 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-  <style>
-/* Styles for elements in JavaScript code */
-#wordInput,
-#searchButton,
-#clearButton,
-#backButtoon {
-    font-size: 16px;
-    padding: 10px;
-    margin: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-/* Add hover effect to buttons */
-#searchButton:hover,
-#clearButton:hover {
-    background-color: #0056b3;
-    color: #fff;
-}
-#results {
-    margin-top: 20px;
-}
 
-#results h1 {
-    font-size: 24px;
-    margin-bottom: 10px;
-}
-
-#results a {
-    text-decoration: none;
-    color: #007BFF;
-}
-
-#results a:hover {
-    text-decoration: underline;
-}
-
-#details {
-    margin-top: 20px;
-}
-
-#details h1 {
-    font-size: 24px;
-    margin-bottom: 10px;
-}
-
-#details h2 {
-    font-size: 20px;
-    font-weight: bold;
-}
-
-#details p {
-    font-size: 16px;
-    margin: 5px 0;
-}
-
-#details button {
-    font-size: 16px;
-    padding: 10px 20px;
-    background-color: #007BFF;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-#details button:hover {
-    background-color: #0056b3;
-}
-body {
-    background-color: #f0f0f0; /* Example light gray background color */
-    color: #333; /* Example dark text color */
-}
-
-</style>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Blind Dictionary</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link id="styleLink" rel="stylesheet" type="text/css" href="/views/style.css">
+    <title>The Blind Dictionary</title>
 </head>
 
 <body aria-label="The Blind Dictionary">
-  <h1>The Blind Dictionary</h1>
-  <input type="text" id="wordInput" placeholder="Searchbar"></input>
-  <button id="searchButton">Search Term</button>
-  <button id="clearButton">Clear</button>
-  <div id="results"></div>
-  <div id="details" hidden="false">
-    <h1 id="detailsHdr" aria-label="Terms Details">Terms Details:
-      <div id="datailCont" aria-label="Content">
-        
-      </div>
-    </h1>
-  </div>
-  <script type="text/javascript" src="/views/script.js"></script>
-  <script src="https://code.responsivevoice.org/responsivevoice.js?key=fbCBzWk0"></script>
-</body>
-</html>
+    <h1>The Blind Dictionary</h1>
+    <input type="text" id="wordInput" placeholder="Searchbar"></input>
+    <button id="searchButton">Search Term</button>
+    <button id="clearButton">Clear</button>
+    <button id="settings-button" onclick="redirectToSettings()">Page Settings</button>
+    <div id="results"></div>
+    <div id="details" hidden="false">
+        <h1 id="detailsHdr" aria-label="Terms Details">Terms Details:
+            <div id="datailCont" aria-label="Content">
 
+            </div>
+        </h1>
+    </div>
+    <script type="text/javascript" src="/views/script.js"></script>
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=fbCBzWk0"></script>
+    <script>
+        function redirectToSettings() {
+            const currentURL = new URL(window.location.href);
+
+            // Get the values of bgColor, textColor, textFont, and textSize from the URL
+            const bgColor = currentURL.searchParams.get('bgColor');
+            const textColor = currentURL.searchParams.get('textColor');
+            const textFont = currentURL.searchParams.get('textFont');
+            const textSize = currentURL.searchParams.get('textSize');
+
+
+            var url = `/settings?bgColor=${bgColor}&textColor=${textColor}&textFont=${textFont}&textSize=${textSize}`;
+            // Check if all parameters have values
+            if (bgColor && textColor && textFont && textSize) {
+                // If all parameters are present, navigate to the URL with parameters
+
+                window.location.replace(url);
+                window.location.href = url;
+            } else {
+                // If any parameter is missing, navigate to the URL without parameters
+                window.location.replace('/settings');
+                window.location.href = '/settings';
+            }
+        }
+        function applyStylesToAllElements(bgColor, textColor, textFont, textSize) {
+            // Get all elements in the document
+            const allElements = document.querySelectorAll('*');
+
+            // Loop through all elements and apply the styles
+            allElements.forEach((element) => {
+                element.style.backgroundColor = bgColor;
+                element.style.color = textColor;
+                element.style.fontFamily = textFont;
+                element.style.fontSize = textSize;
+            });
+        }
+
+        // Attach the function to the window.onload event
+        window.onload = function () {
+            // Get the values from the URL parameters
+            const currentURL = new URL(window.location.href);
+            const bgColor = currentURL.searchParams.get('bgColor');
+            const textColor = currentURL.searchParams.get('textColor');
+            const textFont = currentURL.searchParams.get('textFont');
+            const textSize = currentURL.searchParams.get('textSize');
+            if (bgColor && textColor && textFont && textSize) {
+            // Call the function to apply styles to all elements
+            applyStylesToAllElements(bgColor, textColor, textFont, textSize);
+            }
+        };
+    </script>
+</body>
+
+</html>

@@ -1,4 +1,29 @@
 document.addEventListener("DOMContentLoaded", function () {
+
+  const currentURL = new URL(window.location.href);
+
+  // Get the values of bgColor, textColor, textFont, and textSize from the URL
+  const bgColor = currentURL.searchParams.get('bgColor') || "#f0f0f0"; // Default to light grey;
+  const textColor = currentURL.searchParams.get('textColor') || "#000000"; // Default to dark grey;
+  const textFont = currentURL.searchParams.get('textFont') || "Arial"; // Default to Arial;
+  const textSize = currentURL.searchParams.get('textSize') || "100%"; // Default to normal size (100%)
+  ;
+
+/*   const bgColor = urlParams.get("bgColor") || "#f0f0f0"; // Default to light grey
+  const textColor = urlParams.get("textColor") 
+  const textFont = urlParams.get("textFont") 
+  const textSize = urlParams.get("textSize")  */
+  // Set default values for other parameters
+  // Add more parameters as needed
+
+  // Apply styles to the document
+  if (bgColor && textColor && textFont && textSize) {
+    document.documentElement.style.setProperty("--background-color", bgColor);
+    document.documentElement.style.setProperty("--text-color", textColor);
+    document.documentElement.style.setProperty("--text-font", textFont);
+    document.documentElement.style.setProperty("--textSize", textSize);
+  }
+
   const searchButton = document.getElementById("searchButton");
   const results = document.getElementById("results");
   const detailDiv = document.getElementById("datailCont");
@@ -141,9 +166,8 @@ document.addEventListener("DOMContentLoaded", function () {
     detailDiv.style.lineHeight = "0.001";
     detailDiv.appendChild(document.createElement("br"));
 
-
     const playPronounceButton = document.createElement("button");
-    playPronounceButton.innerHTML = '<span>&#x1F50A;</span> Play Pronounce'; // Unicode for the speaker icon
+    playPronounceButton.innerHTML = "<span>&#x1F50A;</span> Play Pronounce"; // Unicode for the speaker icon
     playPronounceButton.id = "playPronounceButton";
     playPronounceButton.style.fontSize = "16px";
     playPronounceButton.style.padding = "10px 20px";
@@ -153,23 +177,22 @@ document.addEventListener("DOMContentLoaded", function () {
     playPronounceButton.style.borderRadius = "5px";
     playPronounceButton.style.cursor = "pointer";
     playPronounceButton.style.marginTop = "10px"; // Add some space on top
-    
+
     // Add hover effect
     playPronounceButton.addEventListener("mouseenter", function () {
       playPronounceButton.style.backgroundColor = "#218838"; // Darker green color on hover
     });
-    
+
     playPronounceButton.addEventListener("mouseleave", function () {
       playPronounceButton.style.backgroundColor = "#28a745"; // Restore original color on mouse leave
     });
     playPronounceButton.style.marginTop = "10px"; // Add some space on top
-    
-    playPronounceButton.addEventListener("click", async function () {
-    responsiveVoice.speak(word);
 
+    playPronounceButton.addEventListener("click", async function () {
+      responsiveVoice.speak(word);
     });
-/*   } */
-  
+    /*   } */
+
     // Add the "Play Pronounce" button to the detailDiv
     detailDiv.appendChild(playPronounceButton);
 
@@ -221,11 +244,11 @@ document.addEventListener("DOMContentLoaded", function () {
     backButton.style.borderRadius = "5px";
     backButton.style.cursor = "pointer";
     backButton.style.marginTop = "20px"; // Add more space on top
-    backButton.style.marginLeft = "0px"; // Align more to the left    
+    backButton.style.marginLeft = "0px"; // Align more to the left
     backButton.addEventListener("mouseenter", function () {
       backButton.style.backgroundColor = "#0056b3";
     });
-    
+
     backButton.addEventListener("mouseleave", function () {
       backButton.style.backgroundColor = "#007BFF";
     });
@@ -451,7 +474,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
- /*  async function fetchPronunciationAudio(word) {
+  /*  async function fetchPronunciationAudio(word) {
     try {
       const response = await fetch(`https://code.responsivevoice.org/getvoice.php?t=${encodeURIComponent(word)}&tl=en-GB`);
     

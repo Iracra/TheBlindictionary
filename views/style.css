@@ -1,0 +1,151 @@
+/* Common style properties */
+:root {
+  --font-size: 16px;
+  --padding: 10px;
+  --margin: 5px;
+  --border: 1px solid #ccc;
+  --border-radius: 5px;
+  --background-color: #f0f0f0; /* Default background color */
+  --text-color: #000000; /* Default text color */
+  --text-font: Arial; /* Default text font */
+  --textSize: 100%; /* Default text size */
+}
+
+/* Apply styles using CSS variables */
+body,
+form,
+button,
+#searchButton,
+#clearButton,
+#backButton,
+#settings-button,
+#apply,
+#toHomepage {
+  font-size: var(--font-size);
+  padding: var(--padding);
+  margin: var(--margin);
+  border: var(--border);
+  border-radius: var(--border-radius);
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: var(--text-font);
+}
+
+#wordInput {
+  border: #000000;
+  font: bold;
+  padding: var(--padding);
+  margin: var(--margin);
+  border: var(--border);
+  border-radius: var(--border-radius);
+  color: var(--text-color);
+  font-size: var(--font-size);
+  padding: var(--padding);
+  margin: var(--margin);
+  border: var(--border);
+  border-radius: var(--border-radius);
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: var(--text-font);
+}
+
+#wordInput::placeholder {
+    padding: var(--padding);
+    color: var(--text-color);
+    font-size: var(--font-size);
+    padding: var(--padding);
+    border-radius: var(--border-radius);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: var(--text-font);
+}
+select {
+  font-size: var(--font-size);
+  padding: var(--padding);
+  margin: var(--margin);
+  border: var(--border);
+  border-radius: var(--border-radius);
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: var(--text-font);
+}
+
+
+/* Add hover effect to select dropdowns */
+select:hover {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+/* Add hover effect to buttons */
+button:hover,
+#searchButton:hover,
+#clearButton:hover,
+#settings-button:hover,
+#toHomepage:hover,
+#apply:hover {
+  background-color: #0056b3;
+  color: #fff;
+}
+
+/* Other styles... */
+#results {
+  margin-top: 20px;
+}
+
+#results h1 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+#results a {
+  text-decoration: none;
+  color: #007bff;
+}
+
+#results a:hover {
+  text-decoration: underline;
+}
+
+#details {
+  margin-top: 20px;
+}
+
+#details h1 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+#details h2 {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+#details p {
+  font-size: 16px;
+  margin: 5px 0;
+}
+
+#details button {
+  font-size: 16px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#details button:hover {
+  background-color: #0056b3;
+}
+
+body,
+form {
+  /* Ensure a minimum text/body contrast ratio of 4:1 */
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: var(--text-font);
+  font-size: var(--textSize);
+}
