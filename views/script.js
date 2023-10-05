@@ -3,8 +3,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const currentURL = new URL(window.location.href);
 
   // Get the values of bgColor, textColor, textFont, and textSize from the URL
-  const bgColor = currentURL.searchParams.get('bgColor') || "#f0f0f0"; // Default to light grey;
-  const textColor = currentURL.searchParams.get('textColor') || "#000000"; // Default to dark grey;
+  const bgColor = currentURL.searchParams.get('bgColor') || "light grey"; // Default to light grey;
+  const textColor = currentURL.searchParams.get('textColor') || "black"; // Default to dark grey;
   const textFont = currentURL.searchParams.get('textFont') || "Arial"; // Default to Arial;
   const textSize = currentURL.searchParams.get('textSize') || "100%"; // Default to normal size (100%)
   ;

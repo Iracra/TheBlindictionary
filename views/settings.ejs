@@ -16,21 +16,21 @@
         <!-- Background color settings -->
         <label for="bg-color">Background Color:</label>
         <select id="bg-color">
-            <option value="black" selected>Black</option>
+            <option value="black" >Black</option>
             <option value="green">Green</option>
             <option value="yellow">Yellow</option> <!-- Default value -->
-            <option value="grey">Grey</option>
+            <option value="light grey" selected>Grey</option>
             <option value="white">White</option>
         </select>
 
         <!-- Text color settings -->
         <label for="text-color">Text Color:</label>
         <select id="text-color">
-            <option value="black">Black</option>
+            <option value="black" selected>Black</option>
             <option value="green">Green</option>
             <option value="yellow">Yellow</option> <!-- Default value -->
             <option value="grey">Grey</option>
-            <option value="white" selected>White</option>
+            <option value="white" >White</option>
         </select>
 
         <!-- Text font settings -->
@@ -65,8 +65,8 @@
     <script>
         // Default values
         const defaultStyles = {
-            bgColor: '#f0f0f0',
-            textColor: '#000000',
+            bgColor: 'light grey',
+            textColor: 'black',
             textFont: 'Arial',
             textSize: '100%',
         };
@@ -118,8 +118,7 @@
             exampleText.style.fontFamily = defaultStyles.textFont;
             exampleText.style.fontSize = defaultStyles.textSize;
 
-            window.location.replace = '/settings';
-
+ 
             document.getElementById('apply').click();
 
      
