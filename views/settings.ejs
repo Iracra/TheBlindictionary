@@ -45,6 +45,7 @@
         <label for="text-size">Text Size:</label>
         <select id="text-size">
             <option value="100%" selected>100%</option> <!-- Default value -->
+            <option value="110%">110%</option>
             <option value="150%">150%</option>
             <option value="200%">200%</option>
         </select>
@@ -137,7 +138,32 @@
             // Redirect to the homepage with parameters
             window.location.href = url;
         });
+        function applyStylesToAllElements(bgColor, textColor, textFont, textSize) {
+            // Get all elements in the document
+            const allElements = document.querySelectorAll('*');
 
+            // Loop through all elements and apply the styles
+            allElements.forEach((element) => {
+                element.style.backgroundColor = bgColor;
+                element.style.color = textColor;
+                element.style.fontFamily = textFont;
+                element.style.fontSize = textSize;
+            });
+        }
+
+        // Attach the function to the window.onload event
+        window.onload = function () {
+            // Get the values from the URL parameters
+            const currentURL = new URL(window.location.href);
+            const bgColor = currentURL.searchParams.get('bgColor');
+            const textColor = currentURL.searchParams.get('textColor');
+            const textFont = currentURL.searchParams.get('textFont');
+            const textSize = currentURL.searchParams.get('textSize');
+            if (bgColor && textColor && textFont && textSize) {
+            // Call the function to apply styles to all elements
+            applyStylesToAllElements(bgColor, textColor, textFont, textSize);
+            }
+        };
         
     </script>
 

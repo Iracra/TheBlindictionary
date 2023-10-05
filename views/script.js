@@ -81,8 +81,10 @@ document.addEventListener("DOMContentLoaded", function () {
           linkContainer.setAttribute("aria-label", "Terms Result List");
           for (let a = 0; a < words.length; a++) {
             const singleWord = words[a].word;
+           
             const uppercaseWord =
               singleWord.charAt(0).toUpperCase() + singleWord.slice(1);
+  
             const link = document.createElement("a");
             link.id = "li" + a + 1;
             link.textContent = uppercaseWord;
@@ -102,9 +104,11 @@ document.addEventListener("DOMContentLoaded", function () {
             if ((a + 1) % 10 === 0) {
               linkContainer.appendChild(document.createElement("br"));
             }
+          
           }
 
           h1.appendChild(linkContainer);
+          refreshCss();
         }
       } catch (error) {
         console.error(error);
@@ -113,6 +117,31 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
   }
+
+/*   async function checkWordDefinition(singleWord){
+    const options = {
+      method: "GET",
+      headers: {
+        "X-RapidAPI-Key": "07e0782a67mshe6931296b9986dap118445jsn9b7a1fbadec6",
+        "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com"
+      }
+    };
+    const url = `https://wordsapiv1.p.rapidapi.com/words/${singleWord}`;
+    const response = await fetch(url, options);
+    
+    if (response.status === 404) {
+      // Handle the 404 error here
+      return false;
+    }
+    
+    const wordDetails = await response.json();
+    
+    if (!wordDetails || wordDetails.results.length === 0 || wordDetails.success === false) {
+      return false;
+    }
+    
+    return true;
+  } */
 
   async function displayWordDetails(singleWord) {
     const options = {
@@ -263,6 +292,7 @@ document.addEventListener("DOMContentLoaded", function () {
     detailDiv.appendChild(document.createElement("br"));
     detailDiv.appendChild(backButton);
     h2Word.focus();
+    refreshCss();
   }
 
   function checkPartOfSpeech(PartOfSpeech, results) {
@@ -473,6 +503,25 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
+  function refreshCss(){
+
+    const currentURL = window.location.href;
+    const url = new URL(currentURL);
+    const bgColor = url.searchParams.get('bgColor');
+    const textColor = url.searchParams.get('textColor');
+    const textFont = url.searchParams.get('textFont');
+    const textSize = url.searchParams.get('textSize');
+    if (bgColor && textColor && textFont && textSize) {
+      const allElements = document.querySelectorAll('*');
+      allElements.forEach((element) => {
+        element.style.backgroundColor = bgColor;
+        element.style.color = textColor;
+        element.style.fontFamily = textFont;
+        element.style.fontSize = textSize;
+    });
+      }
   }
   /*  async function fetchPronunciationAudio(word) {
     try {

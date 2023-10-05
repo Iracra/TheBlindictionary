@@ -20,7 +20,9 @@ button,
 #backButton,
 #settings-button,
 #apply,
-#toHomepage {
+#toHomepage,
+#playPronounceButton,
+#backButtoon {
   font-size: var(--font-size);
   padding: var(--padding);
   margin: var(--margin);
@@ -30,7 +32,14 @@ button,
   color: var(--text-color);
   font-family: var(--text-font);
 }
-
+a{
+  color: var(--text-color);
+  font-size: var(--font-size);
+  border-radius: var(--border-radius);
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: var(--text-font); 
+}
 #wordInput {
   border: #000000;
   font: bold;
