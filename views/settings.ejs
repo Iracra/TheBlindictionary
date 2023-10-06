@@ -19,7 +19,7 @@
             <option value="black" style="background-color: black; color: white;">Black</option>
             <option value="green" style="background-color: green; color: white;">Green</option>
             <option value="yellow" style="background-color: yellow; color: black;">Yellow</option>
-            <option value="grey" style="background-color:  grey; color: black;" selected>Grey</option>
+            <option value="lightgrey" style="background-color:  grey; color: black;" selected>Grey</option>
             <option value="white" style="background-color: white; color: black;">White</option>
             <option value="darkgrey" style="background-color: darkgrey; color: white;">Dark Grey</option>
             <option value="blue" style="background-color: blue; color: white;">Blue</option>
@@ -74,7 +74,7 @@
     <script>
         // Default values
         const defaultStyles = {
-            bgColor: 'light grey',
+            bgColor: 'lightgrey',
             textColor: 'black',
             textFont: 'Arial',
             textSize: '100%',
@@ -117,7 +117,7 @@
         // Reset to default values when the "Reset to Default" button is clicked
         document.getElementById('reset').addEventListener('click', function () {
             // Set selected options to default values
-            document.getElementById('bg-color').value = defaultStyles.bgColor;
+            document.getElementById('bg-color').value = "white";
             document.getElementById('text-color').value = defaultStyles.textColor;
             document.getElementById('text-font').value = defaultStyles.textFont;
             document.getElementById('text-size').value = defaultStyles.textSize;
@@ -132,7 +132,7 @@
     
             document.getElementById('apply').click();
             
- 
+            defaultStyles.flag = false;
      
             
         });
