@@ -1,17 +1,18 @@
-/* Common style properties */
+/* Css di defult */
 :root {
   --font-size: 16px;
   --padding: 10px;
   --margin: 5px;
   --border: 1px solid #ccc;
   --border-radius: 5px;
-  --background-color: #f0f0f0; /* Default background color */
-  --text-color: #000000; /* Default text color */
-  --text-font: Arial; /* Default text font */
-  --textSize: 100%; /* Default text size */
+  --background-color: #f0f0f0; 
+  --text-color: #000000; 
+  --text-font: Arial; 
+  --textSize: 100%; 
 }
 
-/* Apply styles using CSS variables */
+
+/* Css per oggetti con valori parametrizzabili (tramite paramteri URL) */
 body,
 form,
 button,
@@ -32,6 +33,7 @@ button,
   color: var(--text-color);
   font-family: var(--text-font);
 }
+/* Css per link */
 a{
   color: var(--text-color);
   font-size: var(--font-size);
@@ -40,6 +42,7 @@ a{
   color: var(--text-color);
   font-family: var(--text-font); 
 }
+
 #wordInput {
   border: #000000;
   font: bold;
@@ -80,14 +83,14 @@ select {
 }
 
 
-/* Add hover effect to select dropdowns */
+
 select:hover {
   background-color: var(--background-color);
   color: var(--text-color);
   cursor: pointer;
 }
 
-/* Add hover effect to buttons */
+
 button:hover,
 #searchButton:hover,
 #clearButton:hover,
@@ -152,7 +155,6 @@ button:hover,
 
 body,
 form {
-  /* Ensure a minimum text/body contrast ratio of 4:1 */
   background-color: var(--background-color);
   color: var(--text-color);
   font-family: var(--text-font);

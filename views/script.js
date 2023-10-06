@@ -2,27 +2,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const currentURL = new URL(window.location.href);
 
-  // Get the values of bgColor, textColor, textFont, and textSize from the URL
+ /* Gestione inserimento valore parametri URL nei CSS */
   const bgColor = currentURL.searchParams.get('bgColor') || "light grey"; // Default to light grey;
   const textColor = currentURL.searchParams.get('textColor') || "black"; // Default to dark grey;
   const textFont = currentURL.searchParams.get('textFont') || "Arial"; // Default to Arial;
   const textSize = currentURL.searchParams.get('textSize') || "100%"; // Default to normal size (100%)
   ;
-
-/*   const bgColor = urlParams.get("bgColor") || "#f0f0f0"; // Default to light grey
-  const textColor = urlParams.get("textColor") 
-  const textFont = urlParams.get("textFont") 
-  const textSize = urlParams.get("textSize")  */
-  // Set default values for other parameters
-  // Add more parameters as needed
-
-  // Apply styles to the document
   if (bgColor && textColor && textFont && textSize) {
     document.documentElement.style.setProperty("--background-color", bgColor);
     document.documentElement.style.setProperty("--text-color", textColor);
     document.documentElement.style.setProperty("--text-font", textFont);
     document.documentElement.style.setProperty("--textSize", textSize);
   }
+
+  /* Elementi a schermo di default */
 
   const searchButton = document.getElementById("searchButton");
   const results = document.getElementById("results");
@@ -31,6 +24,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const input = document.getElementById("wordInput");
   const clearButton = document.getElementById("clearButton");
   var globalwordDet;
+
+  /* Eventi legati a elementi a schermo  */
 
   searchButton.addEventListener("click", async function (event) {
     event.preventDefault();
@@ -64,27 +59,32 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  /* Fetch Words - legge da API datamuse tutte le parole che rientrano nella stringa inserita nella searchbar
+  e le visualizza a schermo come dei link cliccabili.
+  */
+
   async function fetchWords() {
     const word = document.getElementById("wordInput").value;
     if (word !== "") {
       const urldD = `https://api.datamuse.com/words?sp=${word}*&max=30`;
       try {
-        const response = await fetch(urldD, { mode: "cors" });
-        const words = await response.json();
+        const response = await fetch(urldD, { mode: "cors" }); 
+        const words = await response.json(); /* Catturo l'array di parole trovato */
         if (words && words.length > 0) {
           const h1 = document.createElement("h1");
           results.appendChild(h1);
-          h1.textContent = "Terms Found:";
+          h1.textContent = "Terms Found:"; /* Creo header */
           h1.id = "res1";
           h1.classList.add("larger-text");
+          /* Creo un container per i link con area label terms result list (per screen reader) */
           const linkContainer = document.createElement("div");
           linkContainer.setAttribute("aria-label", "Terms Result List");
           for (let a = 0; a < words.length; a++) {
             const singleWord = words[a].word;
-           
+           /* Parola da mostrare a schermo con prima lettera maiuscola */
             const uppercaseWord =
               singleWord.charAt(0).toUpperCase() + singleWord.slice(1);
-  
+            /* Con parola trovata creo un link che al click mostra il dettaglio di quel termine in basso nello schermo */
             const link = document.createElement("a");
             link.id = "li" + a + 1;
             link.textContent = uppercaseWord;
@@ -93,14 +93,14 @@ document.addEventListener("DOMContentLoaded", function () {
               refreshDetails();
               displayWordDetails(singleWord);
             });
-
+            /* Inserisci uno spazio dopo ogni parola tranne l'ultima */
             if (a < words.length - 1) {
               linkContainer.appendChild(link);
               linkContainer.appendChild(document.createTextNode(" "));
             } else {
               linkContainer.appendChild(link);
             }
-
+            /* Vai a capo ogni 10 termini (per leggibilità anche per vedenti) */
             if ((a + 1) % 10 === 0) {
               linkContainer.appendChild(document.createElement("br"));
             }
@@ -143,6 +143,9 @@ document.addEventListener("DOMContentLoaded", function () {
     return true;
   } */
 
+/* displayWordDetails - per la parola passata dal link cliccato effettua una chiamata a wordsAPI che  restituisce il dettaglio di quel termine
+contenente Parola, Pronuncia ( Scritta fonetica e verbale, descrizione, Esempi di utilizzo, sinonimi effettuando una classificazione per
+  parte del discorso nome,verbo,aggettivo ecc..) */
   async function displayWordDetails(singleWord) {
     const options = {
       method: "GET",
@@ -151,10 +154,10 @@ document.addEventListener("DOMContentLoaded", function () {
         "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com"
       }
     };
-    const url = `https://wordsapiv1.p.rapidapi.com/words/${singleWord}`;
+    const url = `https://wordsapiv1.p.rapidapi.com/words/${singleWord}`; 
     const response = await fetch(url, options);
-    const wordDetails = await response.json();
-    if (!wordDetails || wordDetails.results.length === 0) {
+    const wordDetails = await response.json(); /* Legge record estratti da API wordsapi */
+    if (!wordDetails || wordDetails.results.length === 0) { /* Non trovo nulla - non mostro nulla */
       details.hidden = true;
       const errorDiv = document.createElement("div");
       errorDiv.textContent = "No Details Found.";
@@ -164,67 +167,70 @@ document.addEventListener("DOMContentLoaded", function () {
     globalwordDet = wordDetails;
     details.hidden = false;
     const results = wordDetails.results;
-    await clearResults(detailDiv);
+    await clearResults(detailDiv);  /* Elimina tutti i valori presenti nei nodi figli del contenitore dei dettagli */
     const writtenWord =
-      singleWord.charAt(0).toUpperCase() + singleWord.slice(1);
-    await templatePage(writtenWord, results);
+      singleWord.charAt(0).toUpperCase() + singleWord.slice(1); /* passo alla pagina template la parola con la prima lettera maiuscola */
+    await templatePage(writtenWord, results); /* Funzione generazione dinamica pagina risultati */
   }
 
-  function clearResults(node) {
+  function clearResults(node) { /* Elimina tutti i valori presenti nei nodi figli del contenitore dei dettagli */
     while (node.firstChild) {
       node.removeChild(node.firstChild);
     }
   }
 
+  /* funzione  templatePage -  dalla parola e i risultati come dettaglio della parola genera la pagina in formato accessibile */
   async function templatePage(word, results) {
     const detailDiv = document.getElementById("datailCont");
     const detailsHdr = document.getElementById("detailsHdr");
     const pronouce = globalwordDet.pronunciation.all;
-    detailsHdr.hidden = false;
+    detailsHdr.hidden = false;     /* Mostro  header  dettagli legato a index.ejs*/
     const h2Word = document.createElement("h2");
     const h2pronounce = document.createElement("h2");
     h2Word.id = "wrd";
-    h2Word.textContent = "Word: " + word;
+    h2Word.textContent = "Word: " + word;  /* Mostro sotto la parola  */
     h2Word.classList.add("larger-text");
     detailDiv.style.lineHeight = "0.001";
-    detailDiv.appendChild(document.createElement("br"));
+    detailDiv.appendChild(document.createElement("br")); /* Aggiungo una riga vuota */
     detailDiv.appendChild(h2Word);
     h2pronounce.id = "prn";
-    h2pronounce.textContent = "Pronunciation: " + pronouce;
+    h2pronounce.textContent = "Pronunciation: " + pronouce; /* Mostro la pronuncia  */
     detailDiv.appendChild(h2pronounce);
     detailDiv.style.lineHeight = "0.001";
-    detailDiv.appendChild(document.createElement("br"));
+    detailDiv.appendChild(document.createElement("br"));  /* Aggiungo una riga vuota */
 
-    const playPronounceButton = document.createElement("button");
-    playPronounceButton.innerHTML = "<span>&#x1F50A;</span> Play Pronounce"; // Unicode for the speaker icon
+    const playPronounceButton = document.createElement("button"); /* Creo un pulsante */
+    playPronounceButton.innerHTML = "<span>&#x1F50A;</span> Play Pronounce";  /* Aggiungo una scritta e un icona con simbolo suono   */
+    /* Css per aspetto pulsante */
     playPronounceButton.id = "playPronounceButton";
     playPronounceButton.style.fontSize = "16px";
     playPronounceButton.style.padding = "10px 20px";
-    playPronounceButton.style.backgroundColor = "#28a745"; // Green color (you can change it)
+    playPronounceButton.style.backgroundColor = "#28a745";
     playPronounceButton.style.color = "#fff";
     playPronounceButton.style.border = "none";
     playPronounceButton.style.borderRadius = "5px";
     playPronounceButton.style.cursor = "pointer";
-    playPronounceButton.style.marginTop = "10px"; // Add some space on top
+    playPronounceButton.style.marginTop = "10px"; 
 
-    // Add hover effect
+     /* Hover CSS per pulsante */
     playPronounceButton.addEventListener("mouseenter", function () {
-      playPronounceButton.style.backgroundColor = "#218838"; // Darker green color on hover
+      playPronounceButton.style.backgroundColor = "#218838"; 
     });
 
     playPronounceButton.addEventListener("mouseleave", function () {
-      playPronounceButton.style.backgroundColor = "#28a745"; // Restore original color on mouse leave
+      playPronounceButton.style.backgroundColor = "#28a745"; 
     });
-    playPronounceButton.style.marginTop = "10px"; // Add some space on top
+    playPronounceButton.style.marginTop = "10px"; 
 
+    /* Leggo parola con API responsivevoice usando un text-to-speech e riproduco audio, l'audio è riprodotto premendo il pulsante*/
     playPronounceButton.addEventListener("click", async function () {
       responsiveVoice.speak(word);
     });
-    /*   } */
 
-    // Add the "Play Pronounce" button to the detailDiv
+    /* aggiungo il pulsante a schermo */
     detailDiv.appendChild(playPronounceButton);
 
+    /* Per ogni categoria Nome,verbo,pronome,avverbio,aggettivo  mostro i dettagli del termine e gli esempi */
     const flagNoun = await checkPartOfSpeech("noun", results);
     if (flagNoun) {
       createSection("Noun", "noun");
@@ -253,7 +259,7 @@ document.addEventListener("DOMContentLoaded", function () {
       createSection("Adjective", "adjective");
       generateDetails(results, "adjective");
     }
-
+    /* Se ho una parte del discorsa diversa dalle precedenti mostro quella a cui appartiene la parola inserendola dinamicamente */
     var otherPartOfSpeech = await getOtherPartofSpeech(results);
     if (otherPartOfSpeech) {
       var otherPartOfSpeech =
@@ -304,6 +310,7 @@ document.addEventListener("DOMContentLoaded", function () {
     return false;
   }
 
+  /* Creo intestazione con titolo intestazione e id intestazione  */
   function createSection(sectionTitle, chidId) {
     const detailDiv = document.getElementById("datailCont");
     const hSection = document.createElement("h2");
@@ -348,30 +355,34 @@ document.addEventListener("DOMContentLoaded", function () {
     return false;
   }
 
+  /* generateDetails - genera il dettaglio dei termini a schermo inserendo tutti i componenti html dinamicamente con i valori trovati in results classificando per 
+  parte del discorso inserita in funzione templatePage  */
   function generateDetails(results, partOfSpe) {
+
+/* Dettaglio definizioni  */
     var id = "def" + partOfSpe;
     const childId = createSection("Definitions:", id);
     const defDiv = document.getElementById(id);
     var i = 0;
     const defContainer = document.createElement("div");
-    defContainer.setAttribute("aria-label", "Definitions Result List");
+    defContainer.setAttribute("aria-label", "Definitions Result List"); /* container definizioni con aria label per screen reader */
     for (const resultn of results) {
       const partOfSpeech = resultn.partOfSpeech;
-      if (partOfSpeech == partOfSpe && i < 3) {
+      if (partOfSpeech == partOfSpe && i < 3) { /* Genero fino a 3 definizioni per ogni parte del discorso  */
         const definition = resultn.definition;
-        const definitionLink = document.createElement("a");
-        definitionLink.href = "javascript:void(0)"; // Add a link with no action
+        const definitionLink = document.createElement("a"); /* inserimento come link accssibie  */
+        definitionLink.href = "javascript:void(0)"; 
         definitionLink.textContent = capitalizeFirstLetter(definition);
+       /* Css definizioni */
+  
+        definitionLink.style.margin = "0"; 
+        definitionLink.style.padding = "0"; 
+        definitionLink.style.lineHeight = "1.2"; 
 
-        // Add CSS to control line spacing for definitions
-        definitionLink.style.margin = "0"; // Remove margin
-        definitionLink.style.padding = "0"; // Remove padding
-        definitionLink.style.lineHeight = "1.2"; // Adjust line height as needed
+        definitionLink.style.textDecoration = "none"; 
+        definitionLink.style.color = "inherit"; 
+        definitionLink.style.cursor = "default"; 
 
-        definitionLink.style.textDecoration = "none"; // Remove underline
-        definitionLink.style.color = "inherit"; // Use the default text color
-        definitionLink.style.cursor = "default"; // Change cursor to default
-        // Prevent the link from navigating when clicked
         definitionLink.onclick = function () {
           return false;
         };
@@ -379,40 +390,40 @@ document.addEventListener("DOMContentLoaded", function () {
         defContainer.appendChild(definitionLink);
         defContainer.appendChild(document.createElement("br"));
 
-        /*         defDiv.appendChild(definitionLink);
-        defDiv.appendChild(document.createElement("br")); */
         i++;
       }
     }
     if (defContainer.hasChildNodes()) {
-      defDiv.appendChild(defContainer);
+      defDiv.appendChild(defContainer);  /* aggiungo il container popolato di definizioni come figlio del foglio index.ejs */
     }
+
+    /* Dettaglio esempi  */
     const exContainer = document.createElement("div");
-    exContainer.setAttribute("aria-label", "Examples Result List");
+    exContainer.setAttribute("aria-label", "Examples Result List"); /* container esempi con aria label per screen reader */
     var id2 = "ex" + partOfSpe;
-    createSection("Examples:", id2); // Create the Examples section
+    createSection("Examples:", id2); 
     const exDiv = document.getElementById(id2);
     var j = 0;
-    let foundExample = false; // Flag to track if any examples are found
+    let foundExample = false; 
 
     for (const resultn of results) {
       const partOfSpeech = resultn.partOfSpeech;
-      if (partOfSpeech == partOfSpe && j < 1) {
+      if (partOfSpeech == partOfSpe && j < 1) { /* Genero fino a 1 esempio per ogni parte del discorso  */
         const examples = resultn.examples;
         if (examples && examples.length > 0) {
           for (const example of examples) {
             const exampleLink = document.createElement("a");
-            exampleLink.href = "javascript:void(0)"; // Add a link with no action
+            exampleLink.href = "javascript:void(0)"; 
             exampleLink.textContent = capitalizeFirstLetter(example);
-
-            // Add CSS to control line spacing for examples
-            exampleLink.style.margin = "0"; // Remove margin
-            exampleLink.style.padding = "0"; // Remove padding
-            exampleLink.style.lineHeight = "1.2"; // Adjust line height as needed
-            exampleLink.style.textDecoration = "none"; // Remove underline
-            exampleLink.style.color = "inherit"; // Use the default text color
-            exampleLink.style.cursor = "default"; // Change cursor to default
-            // Prevent the link from navigating when clicked
+            /* Css esempi */
+          
+            exampleLink.style.margin = "0"; 
+            exampleLink.style.padding = "0"; 
+            exampleLink.style.lineHeight = "1.2"; 
+            exampleLink.style.textDecoration = "none"; 
+            exampleLink.style.color = "inherit"; 
+            exampleLink.style.cursor = "default"; 
+   
             exampleLink.onclick = function () {
               return false;
             };
@@ -420,62 +431,61 @@ document.addEventListener("DOMContentLoaded", function () {
             exContainer.appendChild(exampleLink);
             exContainer.appendChild(document.createElement("br"));
 
-            /*             exDiv.appendChild(exampleLink);
-            exDiv.appendChild(document.createElement("br")); */
+         
           }
-          foundExample = true; // Set the flag to true if examples are found
+          foundExample = true; 
           j++;
         }
       }
     }
     if (exContainer.hasChildNodes()) {
-      exDiv.appendChild(exContainer);
+      exDiv.appendChild(exContainer); /* aggiungo il container esempi popolato alla pagina index.ejs dopo definizioni */
     }
 
+    /* Dettaglio sinonimi  */
     var id3 = "syn" + partOfSpe;
     createSection("Synonyms:", id3);
     const synDiv = document.getElementById(id3);
     var k = 0;
-    let foundSynonym = false; // Flag to track if any synonyms are found
-    const synonymsArray = []; // Array to store synonyms
+    let foundSynonym = false; 
+    const synonymsArray = []; 
     const synonymsContainer = document.createElement("div");
-    synonymsContainer.setAttribute("aria-label", "Synonyms Result List");
+    synonymsContainer.setAttribute("aria-label", "Synonyms Result List"); /* container sinonimi con aria label per screen reader */
     for (const resultn of results) {
       const partOfSpeech = resultn.partOfSpeech;
-      if (partOfSpeech == partOfSpe && k < 4) {
+      if (partOfSpeech == partOfSpe && k < 4) { /* Genero fino a 4 sinonimi per ogni parte del discorso  */
         const synonyms = resultn.synonyms;
         if (synonyms && synonyms.length > 0) {
-          synonymsArray.push(...synonyms.slice(0, 4)); // Add up to 4 synonyms to the array
-          foundSynonym = true; // Set the flag to true if synonyms are found
+          synonymsArray.push(...synonyms.slice(0, 4)); 
+          foundSynonym = true; 
           k++;
         }
       }
     }
 
-    if (synonymsArray.length > 0) {
+    if (synonymsArray.length > 0) { /* rendo prima lettera maiscola e aggiungo virgola mostrando fino a 5 sinonimi */
       const synonymsText = synonymsArray
         .slice(0, 5)
         .map(capitalizeFirstLetter)
         .join(", ");
       const synonymLink = document.createElement("a");
-      synonymLink.href = "javascript:void(0)"; // Add a link with no action
+      synonymLink.href = "javascript:void(0)"; 
       synonymLink.textContent = synonymsText;
-
+      /* Css sinonimi */
       synonymLink.style.margin = "0";
       synonymLink.style.padding = "0";
       synonymLink.style.lineHeight = "1.2";
-      synonymLink.style.textDecoration = "none"; // Remove underline
-      synonymLink.style.color = "inherit"; // Use the default text color
-      synonymLink.style.cursor = "default"; // Change cursor to default
-      // Prevent the link from navigating when clicked
-      synonymLink.onclick = function () {
+      synonymLink.style.textDecoration = "none"; 
+      synonymLink.style.color = "inherit";
+      synonymLink.style.cursor = "default"; 
+
+      synonymLink.onclick = function () { 
         return false;
       };
-      synonymsContainer.appendChild(synonymLink);
-      synonymsContainer.appendChild(document.createElement("br"));
+      synonymsContainer.appendChild(synonymLink); /* aggiungo il container definizioni popolato alla pagina index.ejs dopo definizioni */
+      synonymsContainer.appendChild(document.createElement("br")); 
 
-      /*       synDiv.appendChild(synonymLink);
-      synDiv.appendChild(document.createElement("br")); */
+
     }
     synonymsContainer.appendChild(document.createElement("br"));
     if (synonymsContainer.hasChildNodes()) {
@@ -487,6 +497,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  /* refreshDetails -  elimina tutti i valori presenti nei nodi figli del contenitore dei dettagli */
   async function refreshDetails() {
     await clearResults(details);
     const h1 = document.createElement("h1");
@@ -501,10 +512,13 @@ document.addEventListener("DOMContentLoaded", function () {
     details.appendChild(div);
     details.appendChild(document.createElement("br"));
   }
+
+  /* capitalizeFirstLetter - rende la prima lettera di una parola maiuscola */
   function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
+   /* refresh css - refresa il CSS con i valori default  utente  / quelli parametrizzati nelle impotazioni */
   function refreshCss(){
 
     const currentURL = window.location.href;
@@ -523,21 +537,5 @@ document.addEventListener("DOMContentLoaded", function () {
     });
       }
   }
-  /*  async function fetchPronunciationAudio(word) {
-    try {
-      const response = await fetch(`https://code.responsivevoice.org/getvoice.php?t=${encodeURIComponent(word)}&tl=en-GB`);
-    
-      if (response.ok) {
-        // Read the response as an ArrayBuffer
-        const audioData = await response.arrayBuffer();
-        return audioData;
-      } else {
-        console.error('No pronunciation found for the word.');
-        return null;
-      }
-    } catch (error) {
-      console.error('Error fetching pronunciation:', error);
-      return null;
-    }
-  } */
+
 });

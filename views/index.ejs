@@ -4,55 +4,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Carico Foglio di stile CSS -->
     <link id="styleLink" rel="stylesheet" type="text/css" href="/views/style.css">
     <title>The Blind Dictionary</title>
 </head>
 
+
 <body aria-label="The Blind Dictionary">
     <h1>The Blind Dictionary</h1>
-    <input type="text" id="wordInput" placeholder="Searchbar"></input>
-    <button id="searchButton">Search Term</button>
-    <button id="clearButton">Clear</button>
-    <button id="settings-button" onclick="redirectToSettings()">Page Settings</button>
-    <div id="results"></div>
-    <div id="details" hidden="false">
+    <input type="text" id="wordInput" placeholder="Searchbar"></input>  <!-- Barra di ricerca -->
+    <button id="searchButton">Search Term</button> <!-- Pulsante di ricerca con evento ugale a "enter" su barra di ricerca -->
+    <button id="clearButton">Clear</button> <!-- Refresh ricerca -->
+    <button id="settings-button" onclick="redirectToSettings()">Page Settings</button> <!-- Pulsante per navigazione ad opzioni -->
+    <div id="results"></div> <!-- Contenitore risultati link (default vuoto) -->
+    <div id="details" hidden="false"> <!-- Contenitore dettagli link cliccato (default nascosto) -->
         <h1 id="detailsHdr" aria-label="Terms Details">Terms Details:
             <div id="datailCont" aria-label="Content">
 
             </div>
         </h1>
     </div>
-    <script type="text/javascript" src="/views/script.js"></script>
-    <script src="https://code.responsivevoice.org/responsivevoice.js?key=fbCBzWk0"></script>
+    <script type="text/javascript" src="/views/script.js"></script> <!-- Script del controller -->
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=fbCBzWk0"></script> <!-- Libreria esterna per pronuncia audio text-to speech -->
     <script>
         function redirectToSettings() {
             const currentURL = new URL(window.location.href);
 
-            // Get the values of bgColor, textColor, textFont, and textSize from the URL
+            /* Catturo i parametri  */
             const bgColor = currentURL.searchParams.get('bgColor');
             const textColor = currentURL.searchParams.get('textColor');
             const textFont = currentURL.searchParams.get('textFont');
             const textSize = currentURL.searchParams.get('textSize');
 
-
+            /* Se li trovo navigo con parametri */
             var url = `/settings?bgColor=${bgColor}&textColor=${textColor}&textFont=${textFont}&textSize=${textSize}`;
-            // Check if all parameters have values
             if (bgColor && textColor && textFont && textSize) {
-                // If all parameters are present, navigate to the URL with parameters
+          
 
                 window.location.replace(url);
                 window.location.href = url;
-            } else {
-                // If any parameter is missing, navigate to the URL without parameters
+            } else { /*  Se non li trovo navigo senza (default) */
+              
                 window.location.replace('/settings');
                 window.location.href = '/settings';
             }
         }
+             /* Funzione per applicare stile a tutti gli elementi */
         function applyStylesToAllElements(bgColor, textColor, textFont, textSize) {
-            // Get all elements in the document
+            
             const allElements = document.querySelectorAll('*');
 
-            // Loop through all elements and apply the styles
+           
             allElements.forEach((element) => {
                 element.style.backgroundColor = bgColor;
                 element.style.color = textColor;
@@ -61,16 +63,16 @@
             });
         }
 
-        // Attach the function to the window.onload event
+           /* Al caricamento della pagina applico il CSS proveniente dalla homepage ( per non perdere valori durante navigazione) */
         window.onload = function () {
-            // Get the values from the URL parameters
+
             const currentURL = new URL(window.location.href);
             const bgColor = currentURL.searchParams.get('bgColor');
             const textColor = currentURL.searchParams.get('textColor');
             const textFont = currentURL.searchParams.get('textFont');
             const textSize = currentURL.searchParams.get('textSize');
             if (bgColor && textColor && textFont && textSize) {
-            // Call the function to apply styles to all elements
+         
             applyStylesToAllElements(bgColor, textColor, textFont, textSize);
             }
         };

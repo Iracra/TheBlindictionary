@@ -13,8 +13,9 @@
     <h1>Website Settings</h1>
 
     <form id="settings-form">
-        <!-- Background color settings -->
+        <!-- Opzioni colori sfonod, testo, dimensione carattere e font -->
         <label for="bg-color">Background Color:</label>
+        <!-- Scelta colore sfondo -->
         <select id="bg-color">
             <option value="black" style="background-color: black; color: white;">Black</option>
             <option value="green" style="background-color: green; color: white;">Green</option>
@@ -27,7 +28,7 @@
             <option value="red" style="background-color: red; color: white;">Red</option>            
         </select>
 
-        <!-- Text color settings -->
+        <!-- Scelta  colore testo -->
         <label for="text-color">Text Color:</label>
         <select id="text-color">
             <option value="black" style="background-color: black; color: white;"selected>Black</option>
@@ -42,37 +43,37 @@
             
         </select>
 
-        <!-- Text font settings -->
+        <!-- Scelta Font testo -->
         <label for="text-font">Text Font:</label>
         <select id="text-font">
-            <option value="Arial" selected>Arial</option> <!-- Default value -->
+            <option value="Arial" selected>Arial</option> 
             <option value="Times New Roman">Times New Roman</option>
             <option value="Century Gothic">Century Gothic</option>
         </select>
 
-        <!-- Text size settings -->
+        <!-- Scelta dimensione testo ( fino a 200%) -->
         <label for="text-size">Text Size:</label>
         <select id="text-size">
-            <option value="100%" selected>100%</option> <!-- Default value -->
+            <option value="100%" selected>100%</option> 
             <option value="110%">110%</option>
             <option value="150%">150%</option>
             <option value="200%">200%</option>
         </select>
         <br />
-        <button type="button" id="apply">Apply Settings</button>
-        <button type="button" id="reset">Reset to Default</button> <!-- Added Reset button -->
-        <button type="button" id="toHomepage">To Homepage</button>
+        <button type="button" id="apply">Apply Settings</button> <!-- Applica le modifiche al sito -->
+        <button type="button" id="reset">Reset to Default</button>  <!-- Ripristina a default le modifiche -->
+        <button type="button" id="toHomepage">To Homepage</button> <!-- Torna ad Homepage con modifiche salvate -->
 
     </form>
-    <form id="form">
-        <div id="example-text" aria-label="example text">The mind is its own place, and in itself can make a heaven of
+    <form id="form"> <!-- Testo di esempio  -->
+        <div id="example-text" aria-label="example text">Example text: The mind is its own place, and in itself can make a heaven of
             hell, a hell of heaven - Paradise Lost</div>
     </form>
-    <!-- Example text element -->
+
 
 
     <script>
-        // Default values
+        /* costante per valori di default CSS */
         const defaultStyles = {
             bgColor: 'lightgrey',
             textColor: 'black',
@@ -80,26 +81,16 @@
             textSize: '100%',
             flag: false
         };
-        // Apply settings when the "Apply Settings" button is clicked
+        /* Evento salvataggio */
         document.getElementById('apply').addEventListener('click', function () {
-            // Get selected options
+          /* Prendo i colori inseriti */
             const bgColor = document.getElementById('bg-color').value;
             const textColor = document.getElementById('text-color').value;
             const textFont = document.getElementById('text-font').value;
             const textSize = document.getElementById('text-size').value;
-            const body = document.getElementById('body');
-            const form = document.getElementById('settings-form');
-            const apply = document.getElementById('apply');
-            const reset = document.getElementById('reset');
-            const toHomepage = document.getElementById('toHomepage');
-            const form2 = document.getElementById('form');
-            const optionElements = document.querySelectorAll('option');
-            // Apply selected styles to the example text
-            /*          const exampleText = document.getElementById('example-text'); */
-
+            /* Applico il tema su tutti gli elementi a schermo */
             const allElements = document.querySelectorAll('*');
 
-            // Loop through all elements and apply the styles
             allElements.forEach((element) => {
                 element.style.backgroundColor = bgColor;
                 element.style.color = textColor;
@@ -108,13 +99,14 @@
             });
           
 
-            // Update the CSS link to apply global styles (optional)
+            /* Refresh pagina con modifiche  */
             const styleLink = document.getElementById('styleLink');
             styleLink.href = `/views/style.css?bgColor=${bgColor}&textColor=${textColor}&textFont=${textFont}&textSize=${textSize}`;
+            /* Flag per mantenere modifiche tornando a homepage */
             defaultStyles.flag = true;
         });
 
-        // Reset to default values when the "Reset to Default" button is clicked
+        /* Ripristino valori di default */
         document.getElementById('reset').addEventListener('click', function () {
             // Set selected options to default values
 /*             document.getElementById('bg-color').value = "white";
@@ -129,37 +121,39 @@
             exampleText.style.fontFamily = `#${defaultStyles.textFont}`;
             exampleText.style.fontSize = `#${defaultStyles.textSize}`; */
 
-    
+         /* Ripristino eliminando i parametri dall'url e refreshando la pagina */
             window.location.href = '/settings';
             
-            defaultStyles.flag = false;
+            defaultStyles.flag = false; /* Elimina parametri da navigazione homepage */
      
             
         });
 
-        // Navigate to index.ejs with the parameters when "To Homepage" button is clicked
+       /* Navigo a Homepage */
         document.getElementById('toHomepage').addEventListener('click', function () {
-            // Get the selected options
+           /* Prendo valori scelti */
             const bgColor = document.getElementById('bg-color').value;
             const textColor = document.getElementById('text-color').value;
             const textFont = document.getElementById('text-font').value;
             const textSize = document.getElementById('text-size').value;
             var url = '';
             const flag = defaultStyles.flag;
-            if(flag){
+
+            if(flag){/* Se flag = true ho premuto applica e quindi ho i parametri nella homepage */
             url = `/?bgColor=${bgColor}&textColor=${textColor}&textFont=${textFont}&textSize=${textSize}`;
-            // Redirect to the homepage with parameters
             
-            }else{
+            }else{ /* Altrimenti torno indietro senza parametri */
                 url = '/'
             }
             window.location.href = url;
         });
+
+        /* Funzione per applicare stile a tutti gli elementi */
         function applyStylesToAllElements(bgColor, textColor, textFont, textSize) {
-            // Get all elements in the document
+           
             const allElements = document.querySelectorAll('*');
 
-            // Loop through all elements and apply the styles
+         
             allElements.forEach((element) => {
                 element.style.backgroundColor = bgColor;
                 element.style.color = textColor;
@@ -168,16 +162,16 @@
             });
         }
 
-        // Attach the function to the window.onload event
+        /* Al caricamento della pagina applico il CSS proveniente dalla homepage ( per non perdere valori durante navigazione) */
         window.onload = function () {
-            // Get the values from the URL parameters
+            
             const currentURL = new URL(window.location.href);
             const bgColor = currentURL.searchParams.get('bgColor');
             const textColor = currentURL.searchParams.get('textColor');
             const textFont = currentURL.searchParams.get('textFont');
             const textSize = currentURL.searchParams.get('textSize');
             if (bgColor && textColor && textFont && textSize) {
-            // Call the function to apply styles to all elements
+    
             applyStylesToAllElements(bgColor, textColor, textFont, textSize);
             }
         };
