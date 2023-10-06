@@ -19,7 +19,7 @@
             <option value="black" style="background-color: black; color: white;">Black</option>
             <option value="green" style="background-color: green; color: white;">Green</option>
             <option value="yellow" style="background-color: yellow; color: black;">Yellow</option>
-            <option value="lightgrey" style="background-color: lightgrey; color: black;" selected>Light Grey</option>
+            <option value="grey" style="background-color:  grey; color: black;" selected>Grey</option>
             <option value="white" style="background-color: white; color: black;">White</option>
             <option value="darkgrey" style="background-color: darkgrey; color: white;">Dark Grey</option>
             <option value="blue" style="background-color: blue; color: white;">Blue</option>
@@ -30,10 +30,10 @@
         <!-- Text color settings -->
         <label for="text-color">Text Color:</label>
         <select id="text-color">
-            <option value="black" style="background-color: black; color: white;">Black</option>
+            <option value="black" style="background-color: black; color: white;"selected>Black</option>
             <option value="green" style="background-color: green; color: white;">Green</option>
             <option value="yellow" style="background-color: yellow; color: black;">Yellow</option>
-            <option value="lightgrey" style="background-color: lightgrey; color: black;" selected>Light Grey</option>
+            <option value="lightgrey" style="background-color: lightgrey; color: black;" >Light Grey</option>
             <option value="white" style="background-color: white; color: black;">White</option>
             <option value="darkgrey" style="background-color: darkgrey; color: white;">Dark Grey</option>
             <option value="blue" style="background-color: blue; color: white;">Blue</option>
@@ -111,6 +111,7 @@
             // Update the CSS link to apply global styles (optional)
             const styleLink = document.getElementById('styleLink');
             styleLink.href = `/views/style.css?bgColor=${bgColor}&textColor=${textColor}&textFont=${textFont}&textSize=${textSize}`;
+            defaultStyles.flag = true;
         });
 
         // Reset to default values when the "Reset to Default" button is clicked
@@ -130,7 +131,7 @@
 
     
             document.getElementById('apply').click();
-            defaultStyles.flag = true;
+            
  
      
             
@@ -145,7 +146,7 @@
             const textSize = document.getElementById('text-size').value;
             var url = '';
             const flag = defaultStyles.flag;
-            if(!flag){
+            if(flag){
             url = `/?bgColor=${bgColor}&textColor=${textColor}&textFont=${textFont}&textSize=${textSize}`;
             // Redirect to the homepage with parameters
             
