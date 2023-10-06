@@ -117,7 +117,7 @@
         // Reset to default values when the "Reset to Default" button is clicked
         document.getElementById('reset').addEventListener('click', function () {
             // Set selected options to default values
-            document.getElementById('bg-color').value = "white";
+/*             document.getElementById('bg-color').value = "white";
             document.getElementById('text-color').value = defaultStyles.textColor;
             document.getElementById('text-font').value = defaultStyles.textFont;
             document.getElementById('text-size').value = defaultStyles.textSize;
@@ -127,10 +127,10 @@
             exampleText.style.backgroundColor = `#${defaultStyles.bgColor}`;
             exampleText.style.color = `#${defaultStyles.textColor}`;
             exampleText.style.fontFamily = `#${defaultStyles.textFont}`;
-            exampleText.style.fontSize = `#${defaultStyles.textSize}`;
+            exampleText.style.fontSize = `#${defaultStyles.textSize}`; */
 
     
-            document.getElementById('apply').click();
+            window.location.href = '/settings';
             
             defaultStyles.flag = false;
      
