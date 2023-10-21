@@ -1,6 +1,9 @@
 const express = require("express");
 const app = express();
 const path = require("path"); // Import the 'path' module
+const https = require("https");
+const fs = require("fs");
+
 
 const session = require("express-session");
 // Serve static files (including CSS and JavaScript)
@@ -49,6 +52,16 @@ app.get("/settings", (req, res) => {
 
 const port = process.env.PORT || 3000; // Define the port
 
-app.listen(port, () => {
+const sslServer = https.createServer({
+key: fs.readFileSync(path.join(__dirname, 'cert', 'key.pem')),
+cert: fs.readFileSync(path.join(__dirname, 'cert', 'cert.pem')),
+}, app)
+;
+
+/* app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+}); */
+
+sslServer.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
